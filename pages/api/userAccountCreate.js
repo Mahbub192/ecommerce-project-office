@@ -4,17 +4,17 @@ const bcrypt = require("bcrypt");
 export default async function userAccountCreate(req, res) {
   try {
     // Connect to the database
-    const userCollection = await connectToDatabase().db("myShopdb").collection("userCreates");
+    const client = await connectToDatabase();
+    const db = client.db("myShopdb");
+    const userCollection = db.collection("userCreates");
 
     if (req.method === "POST") {
-      // Extract user data from the request body
+      // Handle POST request to create a new user
       const user = req.body;
 
       // Hash the user's password for security
-      if (user.password) {
-        const hashedPassword = await bcrypt.hash(user.password, 10);
-        user.password = hashedPassword;
-      }
+      const hashedPassword = await bcrypt.hash(user.password, 10);
+      user.password = hashedPassword;
 
       // Check if the user with the same email already exists
       const query = { email: user.email };
@@ -36,11 +36,24 @@ export default async function userAccountCreate(req, res) {
         status: 200,
         data: result,
       });
+    } else if (req.method === "GET") {
+      // Handle GET request to retrieve all users from the database
+      const users = await userCollection.find({}).toArray();
+
+      // Respond with the retrieved user data and a success status
+      res
+        .status(200)
+        .json({
+          message: "Successfully received all user data",
+          status: 200,
+          data: users,
+        });
     }
   } catch (error) {
+    // Handle any errors and log them
     console.error(error);
 
-    // Handle any errors and respond with an error message and status
+    // Respond with an error message and status in case of an error
     res.status(500).json({
       message: "Internal server error",
       status: 500,

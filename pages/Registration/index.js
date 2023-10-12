@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import Swal from "sweetalert2";
 import { FaRegEye } from "react-icons/fa";
@@ -19,10 +19,35 @@ const index = () => {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm();
 
+
+  let imgURL;
+
+  //imagebb upload image and get image url
+  const img_hosting_token = "d73659ce7a4d4dee84b0a167ca4d6f40";
+  const img_hosting_url = `https://api.imgbb.com/1/upload?key=${img_hosting_token}`;
+ 
+
   const onSubmit = async (data) => {
+
+    // here upload the image in imagebb and get url for this image 
+    const formData = new FormData();
+    formData.append("image", data.image[0]);
+    fetch(img_hosting_url, {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((imgResponse) => {
+        if (imgResponse.success) {
+          imgURL = imgResponse.data.display_url;
+        }
+      });
+
+
     setError("");
 
     if (data.confirmPassword === data.password) {
@@ -35,21 +60,24 @@ const index = () => {
         const saveUser = {
           name: data.name,
           email: data.email,
-          image: data.photoURL,
+          image: imgURL,
           password: data.password,
           phoneNumber: data.phoneNumber,
         };
 
-        const response = await fetch(`http://localhost:3000/api/userAccountCreate`, {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-          },
-          body: JSON.stringify(saveUser),
-        });
+        const response = await fetch(
+          `http://localhost:3000/api/userAccountCreate`,
+          {
+            method: "POST",
+            headers: {
+              "content-type": "application/json",
+            },
+            body: JSON.stringify(saveUser),
+          }
+        );
 
         const responseData = await response.json();
-        if (responseData.insertedId) {
+        if (responseData.data.acknowledged) {
           reset();
           Swal.fire({
             icon: "success",
@@ -63,7 +91,9 @@ const index = () => {
         setError(error);
       }
     } else {
-      setError("Confirm password and password are not the same, please try again!!");
+      setError(
+        "Confirm password and password are not the same, please try again!!"
+      );
     }
   };
 
@@ -124,7 +154,7 @@ const index = () => {
                 <span className="text-red-600">Phone Number is required</span>
               )}
             </div>
-            <div className="form-control">
+            {/* <div className="form-control">
               <label className="label">
                 <span className="label-text">Photo URL</span>
               </label>
@@ -137,6 +167,16 @@ const index = () => {
               {errors.photoURL && (
                 <span className="text-red-600">Photo URL is required</span>
               )}
+            </div> */}
+            <div className="form-control w-full ">
+              <label className="label">
+                <span className="label-text">Choose a Image</span>
+              </label>
+              <input
+                type="file"
+                {...register("image", { required: true })}
+                className="file-input file-input-bordered w-full "
+              />
             </div>
             <div className="form-control relative">
               <label className="label">

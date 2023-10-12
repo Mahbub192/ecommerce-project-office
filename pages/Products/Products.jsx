@@ -3,27 +3,21 @@ import Product from "./Product";
 import PaginationControls from "../componants/PaginationControls";
 import { paginate } from "../Utilities/Pagination";
 import { useGetProductsQuery } from "../redux/api/api";
-import dynamic from 'next/dynamic'
-
+import dynamic from "next/dynamic";
 
 const ProductPage = () => {
-
-  const DynamicProduct = dynamic(() => import('./Product'), {
-  loading: () => <h1 className="text-center">Loading...</h1>,
-  ssr:false,
-})
+  const DynamicProduct = dynamic(() => import("./Product"), {
+    loading: () => <h1 className="text-center">Loading...</h1>,
+    ssr: false,
+  });
 
   const [isLoading, setLoading] = useState(true);
   const pageSize = 12;
   const [currentPage, setCurrentPage] = useState(1);
   const [posts, setPosts] = useState([]);
 
-
   // const {data,isError,error}=useGetProductsQuery();
-console.log(posts);
-
-
-
+  console.log(posts);
 
   useEffect(() => {
     fetch("http://localhost:3000/api/server")

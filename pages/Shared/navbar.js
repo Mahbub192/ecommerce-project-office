@@ -82,25 +82,35 @@ const Navbar = () => {
             <li>
               <Link href="/">Order</Link>
             </li>
-            {
-              user ? "": <li>
-              <Link href="/Login">Login</Link>
+            <li>
+              <Link href={"/Dashboard"}>Dashboard</Link>
             </li>
-            }
-            {
-              user && <li>
-              <div className="avatar -mt-1 pr-5">
-                <div className="w-10 rounded-full">
-                  <img src={user?.photoURL} />
+            {user ? (
+              ""
+            ) : (
+              <li>
+                <Link href="/Login">Login</Link>
+              </li>
+            )}
+            {user && (
+              <li>
+                <div className="avatar -mt-1 pr-5">
+                  <div className="w-10 rounded-full">
+                    <img src={user?.photoURL} />
+                  </div>
                 </div>
-              </div>
-            </li>
-            }
-            {
-              user && <li >
-              <button className="bg-blue-500 text-white hover:bg-blue-600 hover:text-white font-bold" onClick={()=>logOut()}>Logout</button>
-            </li>
-            }
+              </li>
+            )}
+            {user && (
+              <li>
+                <button
+                  className="bg-blue-500 text-white hover:bg-blue-600 hover:text-white font-bold"
+                  onClick={() => logOut()}
+                >
+                  Logout
+                </button>
+              </li>
+            )}
           </ul>
         </div>
       </div>
