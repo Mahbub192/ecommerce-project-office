@@ -37,7 +37,33 @@ export default async function userAccountCreate(req, res) {
         status: 200,
         data: result,
       });
-    } else if (req.method === "GET") {
+    } else if (req.method === "PATCH") {
+      const user = req.body;
+      console.log(user)
+      const email = req.body.email;
+      const query = { email: user.email };
+      const updateDoc = {
+        $set: {
+          name: req.body.name,
+          phoneNumber: req.body.phoneNumber,
+          gender: req.body.gender,
+          location:req.body.location,
+          message:req.body.message
+        },
+      };
+
+      const result = await userCollection.updateOne(query, updateDoc);
+
+      // Respond with the retrieved user data and a success status
+      res
+        .status(200)
+        .json({
+          message: "Successfully received all user data",
+          status: 200,
+          data: users,
+        });
+    }
+    else if (req.method === "GET") {
       // Handle GET request to retrieve all users from the database
       const users = await userCollection.find({}).toArray();
 

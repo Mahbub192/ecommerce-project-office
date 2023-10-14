@@ -7,7 +7,7 @@ import { FaLocationDot, FaPhone, FaUser, FaUserGroup } from "react-icons/fa6";
 
 const UserProfile = () => {
   const { user } = useContext(AuthContext);
-  console.log(user);
+  let email = user?.email
   const {
     register,
     handleSubmit,
@@ -15,7 +15,30 @@ const UserProfile = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = async(data) =>{
+    const updateData = {
+      name : data.name,
+      email:  email,
+      phoneNumber: data.phoneNumber,
+      gender: data.gender,
+      location: data.location,
+      message: data.message,
+    }
+    const response = await fetch(`api/userAccountCreate`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updateData),
+    });
+  
+    if (response.ok) {
+      const result = await response.json();
+      return result;
+    } else {
+      console.log('Failed to update user');
+    }
+  };
   return (
     <div className="w-3/5 mx-auto bg-white p-10 shadow-2xl">
       <h1 className="text-2xl front-bold">Personal Details</h1>
@@ -46,9 +69,6 @@ const UserProfile = () => {
               </span>
             </label>
             <input
-              type="email"
-              {...register("email", { required: true })}
-              name="email"
               value={user?.email}
               placeholder={user?.email}
               disabled
@@ -112,15 +132,20 @@ const UserProfile = () => {
                 <AiOutlineMail /> <span className="pl-2">Message</span>
               </span>
             </label>
-            <textarea className="textarea textarea-bordered textarea-lg w-full "
-            type="text"
-            {...register("message", { required: true })}
-            name="message"
-            placeholder="Message"
+            <textarea
+              className="textarea textarea-bordered textarea-lg w-full "
+              type="text"
+              {...register("message", { required: true })}
+              name="message"
+              placeholder="Message"
             ></textarea>
           </div>
         </div>
-        <input className="mt-16 mx-auto border-2 px-10 py-2 text-lg md:text-xl font-bold bg-blue-500 hover:bg-blue-800 text-white" type="submit"  value={"Update Profile"}/>
+        <input
+          className="mt-16 mx-auto border-2 px-10 py-2 text-lg md:text-xl font-bold bg-blue-500 hover:bg-blue-800 text-white"
+          type="submit"
+          value={"Update Profile"}
+        />
       </form>
     </div>
   );
