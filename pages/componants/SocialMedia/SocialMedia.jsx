@@ -16,7 +16,7 @@ const SocialMedia = () => {
       const saveUser = { name: user.displayName, email: user.email, image: user.photoURL };
 
       // Send user data to your server for further processing
-      await fetch(`http://localhost:3000/api/userAccountCreate`, {
+      await fetch(`api/userAccountCreate`, {
         method: "POST",
         headers: {
           "content-type": "application/json",

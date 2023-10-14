@@ -66,7 +66,7 @@ const index = () => {
         };
 
         const response = await fetch(
-          `http://localhost:3000/api/userAccountCreate`,
+          `api/userAccountCreate`,
           {
             method: "POST",
             headers: {

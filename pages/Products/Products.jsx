@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
-import Product from "./Product";
-import PaginationControls from "../componants/PaginationControls";
-import { paginate } from "../Utilities/Pagination";
-import { useGetProductsQuery } from "../redux/api/api";
 import dynamic from "next/dynamic";
+import { useEffect, useState } from "react";
+import { paginate } from "../Utilities/Pagination";
+import PaginationControls from "../componants/PaginationControls";
 
 const ProductPage = () => {
   const DynamicProduct = dynamic(() => import("./Product"), {
@@ -17,7 +15,7 @@ const ProductPage = () => {
   const [posts, setPosts] = useState([]);
 
   // const {data,isError,error}=useGetProductsQuery();
-  console.log(posts);
+  // console.log(posts);
 
   useEffect(() => {
     fetch("api/server")
@@ -42,7 +40,7 @@ const ProductPage = () => {
         ) : (
           <div className="container mx-auto grid lg:grid-cols-4 md:grid-cols-2 gap-4 ">
             {paginatedPosts?.map((p) => (
-              <DynamicProduct key={p.id} product={p}></DynamicProduct>
+              <DynamicProduct key={p._id} product={p}></DynamicProduct>
             ))}
           </div>
         )}
