@@ -20,7 +20,7 @@ const ProductPage = () => {
   console.log(posts);
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/server")
+    fetch("api/server")
       .then((res) => res.json())
       .then((data) => {
         setPosts(data.data);

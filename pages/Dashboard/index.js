@@ -11,14 +11,15 @@ import Option1Content from "./Option1Page";
 import AllUsers from "./AllUsers";
 import UserProfile from "./UserDashboard/UserProfile/UserProfile";
 import SellProducts from "./UserDashboard/SellProducts/SellProducts";
+import AddProducts from "./AdminDashboard/AddProducts/AddProducts";
 
 const { Sider, Content } = Layout;
 
 const DashboardLayout = () => {
   // Get user data from the AuthContext
   const { user } = useContext(AuthContext);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isUser, setIsUser] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(true);
+  const [isUser, setIsUser] = useState(false);
 
   const [content, setContent] = useState(isAdmin ? <AdminDashboard /> : <UserDashboard />);
 
@@ -33,6 +34,10 @@ const DashboardLayout = () => {
     } else if (key === "3") {
       // Display All Users content
       setContent(isAdmin? <AllUsers /> : <SellProducts />);
+    }
+    else if (key === "4") {
+      // Display All Users content
+      setContent(isAdmin? <AddProducts /> : <SellProducts />);
     }
   };
 
@@ -63,6 +68,9 @@ const DashboardLayout = () => {
             </Menu.Item>
             <Menu.Item key="3" onClick={() => handleMenuClick("3")}>
               All Users
+            </Menu.Item>
+            <Menu.Item key="4" onClick={() => handleMenuClick("4")}>
+              Add Products
             </Menu.Item>
           </Menu>
         ) : (
