@@ -1,4 +1,5 @@
 import { connectToDatabase } from "./mongo";
+
 const bcrypt = require("bcrypt");
 
 export default async function userAccountCreate(req, res) {

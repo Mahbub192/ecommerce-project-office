@@ -1,5 +1,6 @@
 import { connectToDatabase } from "./mongo";
 
+
 async function allProduct(req, res) {
   try {
     // Connect to the database

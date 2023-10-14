@@ -1,8 +1,5 @@
 import { MongoClient } from 'mongodb';
 
-
-
-
 const uri = "mongodb+srv://imranachieveit:m9Ijfr8zSu4VPf6r@cluster0.o2tls7p.mongodb.net/?retryWrites=true&w=majority";
 const dbName = "imranachieveit"
 

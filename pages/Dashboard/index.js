@@ -12,6 +12,7 @@ import AllUsers from "./AllUsers";
 import UserProfile from "./UserDashboard/UserProfile/UserProfile";
 import SellProducts from "./UserDashboard/SellProducts/SellProducts";
 import AddProducts from "./AdminDashboard/AddProducts/AddProducts";
+import MyOrder from "./UserDashboard/MyOrder/MyOrder";
 
 const { Sider, Content } = Layout;
 
@@ -37,8 +38,9 @@ const DashboardLayout = () => {
     }
     else if (key === "4") {
       // Display All Users content
-      setContent(isAdmin? <AddProducts /> : "");
+      setContent(isAdmin? <AddProducts /> : <MyOrder />);
     }
+    
   };
 
  
