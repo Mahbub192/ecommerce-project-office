@@ -1,12 +1,13 @@
 import { AuthContext } from "@/pages/providers/AuthProvider";
 import { Upload } from "antd";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineMail } from "react-icons/ai";
 import { FaLocationDot, FaPhone, FaUser, FaUserGroup } from "react-icons/fa6";
 
 const UserProfile = () => {
   const { user } = useContext(AuthContext);
+  const [CurrentUserInfo, setCurrentUserInfo] = useState({})
   let email = user?.email
   const {
     register,
@@ -34,11 +35,29 @@ const UserProfile = () => {
   
     if (response.ok) {
       const result = await response.json();
+      window.alert('it work')
       return result;
     } else {
       console.log('Failed to update user');
     }
   };
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const url = `/api/userAccountCreate?email=${user?.email}`;
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        setCurrentUserInfo(data.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, [user]);
+
+  console.log(CurrentUserInfo.name)
   return (
     <div className="w-3/5 mx-auto bg-white p-10 shadow-2xl">
       <h1 className="text-2xl front-bold">Personal Details</h1>
@@ -56,8 +75,7 @@ const UserProfile = () => {
               type="text"
               {...register("name", { required: true })}
               name="email"
-              value={user?.displayName}
-              placeholder={user?.displayName}
+              placeholder={CurrentUserInfo?.name}
               className="input input-bordered"
             />
           </div>
@@ -69,8 +87,8 @@ const UserProfile = () => {
               </span>
             </label>
             <input
-              value={user?.email}
-              placeholder={user?.email}
+              value={CurrentUserInfo?.email}
+              placeholder={CurrentUserInfo?.email}
               disabled
               className="input input-bordered"
             />

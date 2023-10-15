@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const ImageUploadForm = () => {
+const ImageUploadForm = ({ ImageUrl, setImageUrl }) => {
   const [selectedImages, setSelectedImages] = useState([]);
   const [imageUrls, setImageUrls] = useState([]);
   const [uploading, setUploading] = useState(false);
@@ -43,7 +43,10 @@ const ImageUploadForm = () => {
     setUploading(false);
 
     // Log the uploaded image URLs array to the console
-    console.log('Uploaded Image URLs:', uploadedImageUrls);
+    console.log('Uploaded Image URLs 46,:', uploadedImageUrls);
+    setImageUrl(uploadedImageUrls)
+    
+  
   };
 
   return (

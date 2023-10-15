@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineMail } from "react-icons/ai";
 import { BsShop } from "react-icons/bs";
@@ -13,6 +13,8 @@ import { MdProductionQuantityLimits } from "react-icons/md";
 import ImageUploadForm from "./ImageUploadForm";
 
 const SellProducts = () => {
+  const [ImageUrl, setImageUrl] = useState([]);
+  console.log(ImageUrl.length);
   const {
     register,
     handleSubmit,
@@ -20,7 +22,11 @@ const SellProducts = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {
+    
+  }
+
+  
   return (
     <div className="w-3/5 mx-auto bg-white p-10 shadow-2xl">
       <h1 className="text-2xl front-bold">Product Details</h1>
@@ -142,11 +148,11 @@ const SellProducts = () => {
               <span className="label-text flex items-center">
                 {" "}
                 <FaRegImages />{" "}
-                <span className="pl-2">Product Image More then 3 *</span>
+                <span className="pl-2">Select Product Image More then 3 *</span>
               </span>
             </label>
             <div>
-              <ImageUploadForm />
+              <ImageUploadForm ImageUrl={ImageUrl} setImageUrl={setImageUrl} />
             </div>
           </div>
         </div>
@@ -168,10 +174,15 @@ const SellProducts = () => {
             ></textarea>
           </div>
         </div>
-        <input
-          className="mt-16 mx-auto border-2 px-10 py-2 text-lg md:text-xl font-bold bg-blue-500 hover:bg-blue-800 text-white"
+        <button
+          className={`mt-16 mx-auto border-2 px-10 py-2 text-lg md:text-xl font-bold ${
+            ImageUrl.length === 0 ? "bg-red-300 text-gray-300" : "bg-blue-500 hover:bg-blue-800 text-white"
+          }  `}
           type="submit"
-        />
+          disabled={ImageUrl.length === 0}
+        >
+          Submit
+        </button>
       </form>
     </div>
   );

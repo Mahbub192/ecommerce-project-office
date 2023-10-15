@@ -9,6 +9,19 @@ export default async function userAccountCreate(req, res) {
     const db = client.db("myShopdb");
     const userCollection = db.collection("userCreates");
 
+    if (req.method === 'GET') {
+      const { email } = req.query;
+      const query = { email: email };
+      const user = await userCollection.findOne(query);
+      res.status(200).json({
+        message: "Find the User",
+        status: 200,
+        data: user,
+      });
+    } else {
+      res.status(405).end(); 
+    }
+
     if (req.method === "POST") {
       // Handle POST request to create a new user
       const user = req.body;
@@ -60,7 +73,7 @@ export default async function userAccountCreate(req, res) {
         .json({
           message: "Successfully received all user data",
           status: 200,
-          data: users,
+          data: result,
         });
     }
     else if (req.method === "GET") {
