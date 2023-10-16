@@ -59,7 +59,7 @@ const SellProducts = () => {
   };
 
   useEffect(()=>{
-    email={user.?eamil}0
+    email=user?.email;
   },[user])
 
   return (

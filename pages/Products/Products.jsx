@@ -18,10 +18,11 @@ const ProductPage = () => {
   // console.log(posts);
 
   useEffect(() => {
-    fetch("api/server")
+    fetch("http://localhost:5000/products")
       .then((res) => res.json())
       .then((data) => {
-        setPosts(data.data);
+        setPosts(data);
+        // setPosts(data.data);
         setLoading(false);
       });
   }, []);
@@ -47,7 +48,7 @@ const ProductPage = () => {
       </div>
 
       <PaginationControls
-        itemsCount={posts.length}
+        itemsCount={posts?.length}
         pageSize={pageSize}
         currentPage={currentPage}
         onPageChange={handlePageChange}

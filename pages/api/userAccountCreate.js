@@ -52,8 +52,6 @@ export default async function userAccountCreate(req, res) {
       });
     } else if (req.method === "PATCH") {
       const user = req.body;
-      console.log(user)
-      const email = req.body.email;
       const query = { email: user.email };
       const updateDoc = {
         $set: {
