@@ -1,6 +1,8 @@
-import Link from "next/link";
 import React, { useContext } from "react";
 import { AuthContext } from "../providers/AuthProvider";
+import dynamic from 'next/dynamic';
+
+const Link = dynamic(() => import("next/link"));
 
 const Navbar = () => {
   const { user, logOut } = useContext(AuthContext);
@@ -83,7 +85,7 @@ const Navbar = () => {
               <Link href="/">Order</Link>
             </li>
             <li>
-              <Link href={"/Dashboard"}>Dashboard</Link>
+              <Link href="/Dashboard">Dashboard</Link>
             </li>
             {user ? (
               ""

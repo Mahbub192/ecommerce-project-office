@@ -2,7 +2,7 @@ import Link from "next/link";
 
 
 const Product = ({ product }) => {
-  const { title, price,rating,image, id } = product;
+  const { title, price,rating,image, _id } = product;
   // console.log(product);
 
 
@@ -64,7 +64,7 @@ const Product = ({ product }) => {
         <div className="flex items-center justify-between px-4 py-2 bg-accent">
           <h1 className="text-lg font-bold text-white">$ {price}</h1>
 
-         <Link href={`/Products/${id}`}>
+         <Link href={`/Products/${_id}`}>
          <button className="btn btn-xs  btn-primary text-white" >
             Buy Now 
           </button>

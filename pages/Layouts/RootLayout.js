@@ -1,5 +1,5 @@
-import React, { Children } from 'react';
-import { Breadcrumb, Layout, Menu, theme } from 'antd';
+import { Breadcrumb, Layout, theme } from 'antd';
+import Navbar from '../Shared/navbar';
 const { Header, Content, Footer } = Layout;
 
 
@@ -10,7 +10,7 @@ const RootLayout = ({children}) => {
       } = theme.useToken();
     return (
         <Layout className="layout">
-        <Header
+        {/* <Header
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -29,28 +29,21 @@ const RootLayout = ({children}) => {
               };
             })}
           />
-        </Header>
+        </Header> */}
+        <Navbar></Navbar>
         <Content
           style={{
-            padding: '0 50px',
+            padding: '0 ,0',
           }}
         >
-          <Breadcrumb
-            style={{
-              margin: '16px 0',
-            }}
-          >
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item>List</Breadcrumb.Item>
-            <Breadcrumb.Item>App</Breadcrumb.Item>
-          </Breadcrumb>
+          
           <div
             className="site-layout-content"
             style={{
               background: colorBgContainer,
             }}
           >
-            {Children}
+            {children}
           </div>
         </Content>
         <Footer

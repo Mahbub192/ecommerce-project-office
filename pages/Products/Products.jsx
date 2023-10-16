@@ -18,11 +18,10 @@ const ProductPage = () => {
   // console.log(posts);
 
   useEffect(() => {
-    fetch("http://localhost:5000/products")
+    fetch("/api/server")
       .then((res) => res.json())
       .then((data) => {
-        setPosts(data);
-        // setPosts(data.data);
+        setPosts(data.data);
         setLoading(false);
       });
   }, []);
