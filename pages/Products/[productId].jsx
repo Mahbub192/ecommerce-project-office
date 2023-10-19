@@ -217,9 +217,8 @@ export const getStaticPaths = async () => {
   return { paths, fallback: false };
 };
 
-export const       = async (context) => {
+export const getStaticProps = async (context) => {
   const { params } = context;
-  console.log(params)
   const res = await fetch(`http://localhost:3000/api/server?id=${params.productId}`);
   const data = await res.json();
   return {

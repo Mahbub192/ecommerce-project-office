@@ -9,22 +9,22 @@ export default async function userAccountCreate(req, res) {
     const db = client.db("myShopdb");
     const userCollection = db.collection("userCreates");
 
-    if (req.method === 'GET') {
+    if (req.method === "GET") {
       const { email } = req.query;
       const query = { email: email };
       const user = await userCollection.findOne(query);
+      console.log(user);
       res.status(200).json({
         message: "Find the User",
         status: 200,
         data: user,
       });
-    } else {
-      res.status(405).end(); 
     }
 
-    if (req.method === "POST") {
+    else if (req.method === "POST") {
       // Handle POST request to create a new user
       const user = req.body;
+      console.log(user);
 
       // Hash the user's password for security
       const hashedPassword = await bcrypt.hash(user.password, 10);
@@ -43,7 +43,7 @@ export default async function userAccountCreate(req, res) {
 
       // Save the user's personal information in the database
       const result = await userCollection.insertOne(user);
-
+      console.log(result);
       // Respond with a success message and status
       res.status(200).json({
         message: "Data inserted into the database successfully",
@@ -52,40 +52,37 @@ export default async function userAccountCreate(req, res) {
       });
     } else if (req.method === "PATCH") {
       const user = req.body;
+      // console.log(user)
       const query = { email: user.email };
       const updateDoc = {
         $set: {
           name: req.body.name,
           phoneNumber: req.body.phoneNumber,
           gender: req.body.gender,
-          location:req.body.location,
-          message:req.body.message
+          location: req.body.location,
+          message: req.body.message,
         },
       };
 
       const result = await userCollection.updateOne(query, updateDoc);
+      console.log(result);
 
       // Respond with the retrieved user data and a success status
-      res
-        .status(200)
-        .json({
-          message: "Successfully received all user data",
-          status: 200,
-          data: result,
-        });
-    }
-    else if (req.method === "GET") {
+      res.status(200).json({
+        message: "Successfully received all user data",
+        status: 200,
+        data: result,
+      });
+    } else if (req.method === "GET") {
       // Handle GET request to retrieve all users from the database
       const users = await userCollection.find({}).toArray();
 
       // Respond with the retrieved user data and a success status
-      res
-        .status(200)
-        .json({
-          message: "Successfully received all user data",
-          status: 200,
-          data: users,
-        });
+      res.status(200).json({
+        message: "Successfully received all user data",
+        status: 200,
+        data: users,
+      });
     }
   } catch (error) {
     // Handle any errors and log them

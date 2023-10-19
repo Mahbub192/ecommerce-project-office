@@ -4,11 +4,13 @@ import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { AiOutlineMail } from "react-icons/ai";
 import { FaLocationDot, FaPhone, FaUser, FaUserGroup } from "react-icons/fa6";
+import { connect } from "react-redux";
 
 const UserProfile = () => {
   const { user } = useContext(AuthContext);
   const [CurrentUserInfo, setCurrentUserInfo] = useState({})
   let email = user?.email
+  console.log(email)
   const {
     register,
     handleSubmit,
@@ -44,20 +46,27 @@ const UserProfile = () => {
 
 
   useEffect(() => {
-    const fetchData = async () => {
+    if(user){ const fetchData = async () => {
       const url = `/api/userAccountCreate?email=${user?.email}`;
       try {
         const response = await fetch(url);
         const data = await response.json();
+        console.log(data)
         setCurrentUserInfo(data.data);
+        if(data.data == null){
+          setCurrentUserInfo(user)
+          console.log(customElements)
+        }
       } catch (error) {
         console.error(error);
       }
     };
-    fetchData();
+    fetchData();}
   }, [user]);
 
-  console.log(CurrentUserInfo.name)
+
+
+
   return (
     <div className="w-3/5 mx-auto bg-white p-10 shadow-2xl">
       <h1 className="text-2xl front-bold">Personal Details</h1>
@@ -74,10 +83,12 @@ const UserProfile = () => {
             <input
               type="text"
               {...register("name", { required: true })}
-              name="email"
               placeholder={CurrentUserInfo?.name}
               className="input input-bordered"
             />
+            {errors.name && (
+                <span className="text-red-600">Name is required</span>
+              )}
           </div>
           <div className="form-control w-2/5">
             <label className="label ">
@@ -110,6 +121,10 @@ const UserProfile = () => {
               placeholder={user?.phoneNumber}
               className="input input-bordered"
             />
+            
+            {errors.phoneNumber && (
+                <span className="text-red-600">Phone number is required</span>
+              )}
           </div>
           <div className="form-control w-2/5">
             <label className="label ">
@@ -140,6 +155,9 @@ const UserProfile = () => {
               placeholder="Location"
               className="input input-bordered"
             />
+            {errors.location && (
+                <span className="text-red-600">Location field required</span>
+              )}
           </div>
         </div>
         <div>
@@ -157,6 +175,9 @@ const UserProfile = () => {
               name="message"
               placeholder="Message"
             ></textarea>
+            {errors.message && (
+                <span className="text-red-600">Message field required</span>
+              )}
           </div>
         </div>
         <input

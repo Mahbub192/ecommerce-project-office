@@ -23,39 +23,41 @@ const index = () => {
     formState: { errors },
   } = useForm();
 
-
   let imgURL;
 
-  //imagebb upload image and get image url
+  // ImageBB API configuration
   const img_hosting_token = "d73659ce7a4d4dee84b0a167ca4d6f40";
   const img_hosting_url = `https://api.imgbb.com/1/upload?key=${img_hosting_token}`;
- 
 
   const onSubmit = async (data) => {
-
-    // here upload the image in imagebb and get url for this image 
-    const formData = new FormData();
-    formData.append("image", data.image[0]);
-    fetch(img_hosting_url, {
-      method: "POST",
-      body: formData,
-    })
-      .then((res) => res.json())
-      .then((imgResponse) => {
-        if (imgResponse.success) {
-          imgURL = imgResponse.data.display_url;
-        }
-      });
-
-
     setError("");
 
     if (data.confirmPassword === data.password) {
       try {
+        // Upload the image to ImageBB and get the URL for this image
+        const formData = new FormData();
+        formData.append("image", data.image[0]);
+
+        const imgResponse = await fetch(img_hosting_url, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!imgResponse.ok) {
+          throw new Error("Failed to upload image to ImageBB");
+        }
+
+        const imgData = await imgResponse.json();
+        if (!imgData.success) {
+          throw new Error("Image upload failed");
+        }
+
+        imgURL = imgData.data.display_url;
+
         const result = await createUser(data.email, data.password);
         const loggedUser = result.user;
 
-        await updateUserProfile(data.name, data.photoURL);
+        await updateUserProfile(data.name, imgURL);
 
         const saveUser = {
           name: data.name,
@@ -65,38 +67,39 @@ const index = () => {
           phoneNumber: data.phoneNumber,
         };
 
-        const response = await fetch(
-          `api/userAccountCreate`,
-          {
-            method: "POST",
-            headers: {
-              "content-type": "application/json",
-            },
-            body: JSON.stringify(saveUser),
-          }
-        );
+        const response = await fetch(`api/userAccountCreate`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(saveUser),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to create user account");
+        }
 
         const responseData = await response.json();
-        if (responseData.data.acknowledged) {
-          reset();
-          Swal.fire({
-            icon: "success",
-            title: "User created successfully.",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          router.push("/");
+
+        if (!responseData.data.acknowledged) {
+          throw new Error("Failed to create user account in the database");
         }
+
+        reset();
+        Swal.fire({
+          icon: "success",
+          title: "User created successfully.",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        router.push("/");
       } catch (error) {
-        setError(error);
+        setError(error.message);
       }
     } else {
-      setError(
-        "Confirm password and password are not the same, please try again!!"
-      );
+      setError("Confirm password and password are not the same, please try again!!");
     }
   };
-
   return (
     <div className="hero min-h-[80vh]  pt-20 md:pt-0">
       <div className="hero-content w-full flex flex-col md:flex-row">
@@ -107,7 +110,7 @@ const index = () => {
           <h1 className="text-xl font-semibold text-center mt-10">
             Registration
           </h1>
-          <p className="text-center text-red-500 text-lg">{error}</p>
+          <p className="text-center text-red-500 text-lg">{error ? error.toString() : ""}</p>
           <form onSubmit={handleSubmit(onSubmit)} className="card-body">
             <div className="form-control">
               <label className="label">
