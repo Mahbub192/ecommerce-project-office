@@ -5,76 +5,86 @@ import { useForm } from "react-hook-form";
 import { AiOutlineMail } from "react-icons/ai";
 import { FaLocationDot, FaPhone, FaUser, FaUserGroup } from "react-icons/fa6";
 import { connect } from "react-redux";
+import Swal from "sweetalert2";
 
 const UserProfile = () => {
-  const { user } = useContext(AuthContext);
-  const [CurrentUserInfo, setCurrentUserInfo] = useState({})
-  let email = user?.email
-  console.log(email)
+  const { user,loading } = useContext(AuthContext);
+  const [CurrentUserInfo, setCurrentUserInfo] = useState({});
+
+  let email = user?.email;
+  console.log(email);
   const {
     register,
     handleSubmit,
-    watch,
+    reset,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = async(data) =>{
+  const onSubmit = async (data) => {
     const updateData = {
-      name : data.name,
-      email:  email,
+      name: data.name,
+      email: email,
       phoneNumber: data.phoneNumber,
       gender: data.gender,
       location: data.location,
       message: data.message,
-    }
+    };
     const response = await fetch(`api/userAccountCreate`, {
-      method: 'PATCH',
+      method: "PATCH",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(updateData),
     });
-  
+
     if (response.ok) {
       const result = await response.json();
-      window.alert('it work')
+      reset();
+      Swal.fire({
+        icon: "success",
+        title: "User Information Updated successfully.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
       return result;
     } else {
-      console.log('Failed to update user');
+      console.log("Failed to update user");
     }
   };
 
-
   useEffect(() => {
-    if(user){ const fetchData = async () => {
-      const url = `/api/userAccountCreate?email=${user?.email}`;
-      try {
-        const response = await fetch(url);
-        const data = await response.json();
-        console.log(data)
-        setCurrentUserInfo(data.data);
-        if(data.data == null){
-          setCurrentUserInfo(user)
-          console.log(customElements)
+    if (user) {
+      const fetchData = async () => {
+        const url = `/api/userAccountCreate?email=${user?.email}`;
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+          console.log(data);
+          setCurrentUserInfo(data.data);
+          if (data.data == null) {
+            setCurrentUserInfo(user);
+            console.log(CurrentUserInfo);
+          }
+        } catch (error) {
+          console.error(error);
         }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();}
+      };
+      fetchData();
+    }
   }, [user]);
 
-
-
+  if (loading) {
+    return <h1>Loading.....</h1>;
+  }
 
   return (
     <div className="w-3/5 mx-auto bg-white p-10 shadow-2xl">
-      <h1 className="text-2xl front-bold">Personal Details</h1>
+      <h1 className="text-2xl font-bold">Personal Details</h1>
       <form className="mt-5" onSubmit={handleSubmit(onSubmit)}>
-        {/* Name and Email Input filed */}
-        <div className="flex flex-wrap justify-around gap-6 ">
+        {/* Name and Email Input fields */}
+        <div className="flex flex-wrap justify-around gap-6">
           <div className="form-control w-2/5">
-            <label className="label ">
+            <label className="label">
               <span className="label-text flex items-center">
                 {" "}
                 <FaUser /> <span className="pl-2">Name</span>
@@ -87,11 +97,11 @@ const UserProfile = () => {
               className="input input-bordered"
             />
             {errors.name && (
-                <span className="text-red-600">Name is required</span>
-              )}
+              <span className="text-red-600">Name is required</span>
+            )}
           </div>
           <div className="form-control w-2/5">
-            <label className="label ">
+            <label className="label">
               <span className="label-text flex items-center">
                 {" "}
                 <AiOutlineMail /> <span className="pl-2">Email</span>
@@ -105,10 +115,10 @@ const UserProfile = () => {
             />
           </div>
         </div>
-        {/* Phone Number and Gender Input filed */}
+        {/* Phone Number and Gender Input fields */}
         <div className="flex flex-wrap justify-around gap-6 mt-5">
           <div className="form-control w-2/5">
-            <label className="label ">
+            <label className="label">
               <span className="label-text flex items-center">
                 {" "}
                 <FaPhone /> <span className="pl-2">Phone Number</span>
@@ -118,16 +128,15 @@ const UserProfile = () => {
               type="number"
               {...register("phoneNumber", { required: true })}
               name="phoneNumber"
-              placeholder={user?.phoneNumber}
+              placeholder={CurrentUserInfo?.phoneNumber}
               className="input input-bordered"
             />
-            
             {errors.phoneNumber && (
-                <span className="text-red-600">Phone number is required</span>
-              )}
+              <span className="text-red-600">Phone number is required</span>
+            )}
           </div>
           <div className="form-control w-2/5">
-            <label className="label ">
+            <label className="label">
               <span className="label-text flex items-center">
                 {" "}
                 <FaUserGroup /> <span className="pl-2">Gender Selection</span>
@@ -142,7 +151,7 @@ const UserProfile = () => {
         </div>
         <div>
           <div className="form-control mx-10 mt-5">
-            <label className="label ">
+            <label className="label">
               <span className="label-text flex items-center">
                 {" "}
                 <FaLocationDot /> <span className="pl-2">Location</span>
@@ -156,13 +165,13 @@ const UserProfile = () => {
               className="input input-bordered"
             />
             {errors.location && (
-                <span className="text-red-600">Location field required</span>
-              )}
+              <span className="text-red-600">Location field required</span>
+            )}
           </div>
         </div>
         <div>
           <div className="form-control mx-10 mt-5">
-            <label className="label ">
+            <label className="label">
               <span className="label-text flex items-center">
                 {" "}
                 <AiOutlineMail /> <span className="pl-2">Message</span>
@@ -176,8 +185,8 @@ const UserProfile = () => {
               placeholder="Message"
             ></textarea>
             {errors.message && (
-                <span className="text-red-600">Message field required</span>
-              )}
+              <span className="text-red-600">Message field required</span>
+            )}
           </div>
         </div>
         <input

@@ -54,8 +54,7 @@ const index = () => {
 
         imgURL = imgData.data.display_url;
 
-        const result = await createUser(data.email, data.password);
-        const loggedUser = result.user;
+        const result = await createUser(data.email, data.password); bv 
 
         await updateUserProfile(data.name, imgURL);
 

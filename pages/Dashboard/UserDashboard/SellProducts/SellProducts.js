@@ -12,10 +12,10 @@ import {
 import { MdProductionQuantityLimits } from "react-icons/md";
 import ImageUploadForm from "./ImageUploadForm";
 import Swal from "sweetalert2";
-import AuthProvider from "@/pages/providers/AuthProvider";
+import  { AuthContext } from "@/pages/providers/AuthProvider";
 
 const SellProducts = () => {
-  const {user} = useContext(AuthProvider)
+  const {user} = useContext(AuthContext)
   const [ImageUrl, setImageUrl] = useState([]);
   let email;
   const {

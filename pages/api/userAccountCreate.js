@@ -24,7 +24,7 @@ export default async function userAccountCreate(req, res) {
     else if (req.method === "POST") {
       // Handle POST request to create a new user
       const user = req.body;
-      console.log(user);
+      
 
       // Hash the user's password for security
       const hashedPassword = await bcrypt.hash(user.password, 10);
@@ -43,7 +43,7 @@ export default async function userAccountCreate(req, res) {
 
       // Save the user's personal information in the database
       const result = await userCollection.insertOne(user);
-      console.log(result);
+      
       // Respond with a success message and status
       res.status(200).json({
         message: "Data inserted into the database successfully",
