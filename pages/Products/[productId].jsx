@@ -1,11 +1,22 @@
-import { Fragment, useState } from "react";
+import { Fragment, useContext, useState } from "react";
 import { Tab } from "@headlessui/react";
 import Review from "@/pages/Products/Review";
 import RootLayout from "../Layouts/RootLayout";
 import Link from "next/link";
+import Swal from "sweetalert2";
+import { AuthContext } from "../providers/AuthProvider";
 
 const ProductDetails = ({ item }) => {
+  const { user } = useContext(AuthContext);
+  let email = user?.email;
   const [counter, setCounter] = useState(0);
+
+  let currentDate = new Date();
+  let day = currentDate.getDate();
+  let month = currentDate.getMonth() + 1; // Adding 1 because months are zero-based (0 = January)
+  let year = currentDate.getFullYear();
+
+  let formattedDate = day + "/" + month + "/" + year;
 
   const incrementCounter = () => {
     setCounter(counter + 1);
@@ -14,6 +25,54 @@ const ProductDetails = ({ item }) => {
   const decrementCounter = () => {
     if (counter !== 0) {
       setCounter(counter - 1);
+    }
+  };
+
+  const handelBuyButton = async (item) => {
+    
+    const {
+      _id,
+      title,
+      description,
+      price,
+      discountPercentage,
+      rating,
+      stock,
+      brand,
+      category,
+      thumbnail,
+      images,
+    } = item;
+    const buyItem = {
+      id: _id,
+      email,
+      title,
+      description,
+      price,
+      discountPercentage,
+      rating,
+      stock,
+      brand,
+      category,
+      thumbnail,
+      images,
+      formattedDate,
+    };
+    const response = await fetch(`/api/buyProduct`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(buyItem),
+    });
+    const responseData = await response.json();
+    if (responseData.data.acknowledged) {
+      Swal.fire({
+        icon: "success",
+        title: "Product added successfully in database.",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
   };
 
@@ -133,9 +192,14 @@ const ProductDetails = ({ item }) => {
               </div>
 
               <Link href={`/Products/${item._id}`}>
-                <button className="btn text-white btn-info mr-2">
-                  BUY NOW
-                </button>
+                {user?.email && (
+                  <button
+                    onClick={() => handelBuyButton(item)}
+                    className="btn text-white btn-info mr-2"
+                  >
+                    BUY NOW
+                  </button>
+                )}
               </Link>
               <button className="btn text-white btn-info">ADD TO CART</button>
             </div>
@@ -219,7 +283,9 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context) => {
   const { params } = context;
-  const res = await fetch(`http://localhost:3000/api/server?id=${params.productId}`);
+  const res = await fetch(
+    `http://localhost:3000/api/server?id=${params.productId}`
+  );
   const data = await res.json();
   return {
     props: {

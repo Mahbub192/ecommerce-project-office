@@ -9,7 +9,6 @@ async function sellProductsAPI(req, res) {
   
       if (req.method === "POST") {
         const product = req.body;
-        console.log(product)
         // Retrieve all products from the database
         const result = await SellProduct.insertOne(product);
   

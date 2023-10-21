@@ -13,7 +13,6 @@ export default async function userAccountCreate(req, res) {
       const { email } = req.query;
       const query = { email: email };
       const user = await userCollection.findOne(query);
-      console.log(user);
       res.status(200).json({
         message: "Find the User",
         status: 200,
