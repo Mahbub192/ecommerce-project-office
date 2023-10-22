@@ -26,8 +26,12 @@ export default async function userAccountCreate(req, res) {
       
 
       // Hash the user's password for security
-      const hashedPassword = await bcrypt.hash(user.password, 10);
+      if(user.password){
+        const hashedPassword = await bcrypt.hash(user.password, 10);
       user.password = hashedPassword;
+      }
+
+      console.log(user)
 
       // Check if the user with the same email already exists
       const query = { email: user.email };
